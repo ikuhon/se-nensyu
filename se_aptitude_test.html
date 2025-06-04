@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SE適性診断チェックツール</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 0;
+        }
+        
+        .question-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #74b9ff;
+            transition: transform 0.2s ease;
+        }
+        
+        .question:hover {
+            transform: translateX(5px);
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .question-number {
+            background: #74b9ff;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        
+        .answer-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .answer-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            font-weight: 500;
+        }
+        
+        .answer-btn:hover {
+            border-color: #74b9ff;
+            transform: translateY(-2px);
+        }
+        
+        .answer-btn.selected {
+            background: #74b9ff;
+            color: white;
+            border-color: #74b9ff;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,184,148,0.3);
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,184,148,0.4);
+        }
+        
+        .calculate-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result-container {
+            display: none;
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .result-container.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .score-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .result-text {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .advice-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .advice-section h4 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .advice-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .advice-section li {
+            margin-bottom: 8px;
+        }
+        
+        .hiro-comment {
+            background: #ffe4b5;
+            border-left: 5px solid #ffa500;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #8b4513;
+        }
+        
+        .hiro-comment strong {
+            color: #ff8c00;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .answer-options {
+                flex-direction: column;
+            }
+            
+            .answer-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 SE適性診断チェック</h1>
+            <p>6つの質問であなたのSE適性を診断！雑談が苦手でも大丈夫です</p>
+        </div>
+        
+        <div class="question-container">
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">1</span>
+                    パズルやゲームで問題を解くのが好きですか？
+                </div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-question="1" data-value="1">はい</button>
+                    <button class="answer-btn" data-question="1" data-value="0">いいえ</button>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">2</span>
+                    新しいアプリやツールを試すのが楽しいですか？
+                </div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-question="2" data-value="1">はい</button>
+                    <button class="answer-btn" data-question="2" data-value="0">いいえ</button>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">3</span>
+                    複雑なことを相手に分かりやすく説明するのが得意ですか？
+                </div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-question="3" data-value="1">はい</button>
+                    <button class="answer-btn" data-question="3" data-value="0">いいえ</button>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">4</span>
+                    困ったときに素直に相談や報告ができますか？
+                </div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-question="4" data-value="1">はい</button>
+                    <button class="answer-btn" data-question="4" data-value="0">いいえ</button>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">5</span>
+                    チームで何かを成し遂げるのが好きですか？
+                </div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-question="5" data-value="1">はい</button>
+                    <button class="answer-btn" data-question="5" data-value="0">いいえ</button>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">
+                    <span class="question-number">6</span>
+                    継続的に学習することに抵抗はありませんか？
+                </div>
+                <div class="answer-options">
+                    <button class="answer-btn" data-question="6" data-value="1">はい</button>
+                    <button class="answer-btn" data-question="6" data-value="0">いいえ</button>
+                </div>
+            </div>
+        </div>
+        
+        <button class="calculate-btn" id="calculateBtn" disabled>診断結果を見る</button>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="score-display" id="scoreDisplay">6/6</div>
+            <div class="result-text" id="resultText">SEに非常に向いています！</div>
+            
+            <div class="chart-container">
+                <canvas id="resultChart" width="300" height="300"></canvas>
+            </div>
+            
+            <div class="advice-section" id="adviceSection">
+                <h4>🎯 あなたへのアドバイス</h4>
+                <ul id="adviceList">
+                    <li>素晴らしい適性をお持ちです！</li>
+                    <li>ぜひSEにチャレンジしてみてください</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="hiro-comment">
+            <strong>ひろのコメント：</strong>
+            ちなみに私は3個でしたが、現在SEとして活躍できています。少ないからといって気にすることはないですよ！
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+        const totalQuestions = 6;
+        
+        // 回答ボタンのイベントリスナー
+        document.querySelectorAll('.answer-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const question = this.dataset.question;
+                const value = parseInt(this.dataset.value);
+                
+                // 同じ質問の他のボタンの選択を解除
+                document.querySelectorAll(`[data-question="${question}"]`).forEach(b => {
+                    b.classList.remove('selected');
+                });
+                
+                // このボタンを選択状態に
+                this.classList.add('selected');
+                
+                // 回答を記録
+                answers[question] = value;
+                
+                // 全て回答したか確認
+                checkAllAnswered();
+            });
+        });
+        
+        function checkAllAnswered() {
+            const answeredCount = Object.keys(answers).length;
+            const calculateBtn = document.getElementById('calculateBtn');
+            
+            if (answeredCount === totalQuestions) {
+                calculateBtn.disabled = false;
+                calculateBtn.textContent = '診断結果を見る';
+            } else {
+                calculateBtn.disabled = true;
+                calculateBtn.textContent = `診断結果を見る (${answeredCount}/${totalQuestions})`;
+            }
+        }
+        
+        // 診断結果の計算
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            const score = Object.values(answers).reduce((sum, val) => sum + val, 0);
+            showResult(score);
+        });
+        
+        function showResult(score) {
+            const resultContainer = document.getElementById('resultContainer');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const resultText = document.getElementById('resultText');
+            const adviceList = document.getElementById('adviceList');
+            
+            scoreDisplay.textContent = `${score}/6`;
+            
+            let resultMessage, advice, color;
+            
+            if (score >= 5) {
+                resultMessage = 'SEに非常に向いています！🎉';
+                advice = [
+                    '素晴らしい適性をお持ちです！',
+                    'プログラミング学習を今すぐ始めてみましょう',
+                    'IT企業への転職を積極的に検討してください',
+                    '基本情報技術者試験の取得もおすすめです'
+                ];
+                color = '#00b894';
+            } else if (score >= 3) {
+                resultMessage = '適性はありそうです。挑戦してみる価値あり！💪';
+                advice = [
+                    'SEとして活躍できる可能性は十分あります',
+                    'まずは無料のプログラミング学習から始めてみましょう',
+                    '苦手分野があっても、努力で補えます',
+                    '適性は後から身につくものもあります'
+                ];
+                color = '#fdcb6e';
+            } else {
+                resultMessage = '他の職種も検討してみましょう🤔';
+                advice = [
+                    'SEが唯一の選択肢ではありません',
+                    'IT業界には様々な職種があります',
+                    'Webデザイナーやマーケティングも検討してみてください',
+                    '興味があれば、まずは基礎から学んでみることも大切です'
+                ];
+                color = '#fd79a8';
+            }
+            
+            resultText.textContent = resultMessage;
+            
+            // アドバイスリストを更新
+            adviceList.innerHTML = '';
+            advice.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                adviceList.appendChild(li);
+            });
+            
+            // 結果を表示
+            resultContainer.classList.add('show');
+            
+            // チャートを描画
+            drawResultChart(score, color);
+            
+            // 結果までスクロール
+            resultContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function drawResultChart(score, color) {
+            const ctx = document.getElementById('resultChart').getContext('2d');
+            
+            // 既存のチャートがあれば破棄
+            if (window.resultChart) {
+                window.resultChart.destroy();
+            }
+            
+            window.resultChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['適性スコア', '残り'],
+                    datasets: [{
+                        data: [score, totalQuestions - score],
+                        backgroundColor: [color, '#ecf0f1'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    },
+                    cutout: '70%'
+                },
+                plugins: [{
+                    id: 'centerText',
+                    beforeDraw: function(chart) {
+                        const width = chart.width;
+                        const height = chart.height;
+                        const ctx = chart.ctx;
+                        
+                        ctx.restore();
+                        const fontSize = (height / 114).toFixed(2);
+                        ctx.font = `bold ${fontSize}em Arial`;
+                        ctx.textBaseline = 'middle';
+                        ctx.fillStyle = color;
+                        
+                        const text = `${score}/${totalQuestions}`;
+                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        const textY = height / 2;
+                        
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+        
+        // 初期状態の確認
+        checkAllAnswered();
+    </script>
+</body>
+</html>

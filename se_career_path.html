@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEキャリアパス図</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 0;
+        }
+        
+        .career-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px 0;
+        }
+        
+        .career-level {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .career-node {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 0 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 3px solid;
+            min-width: 200px;
+            text-align: center;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .career-node:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .starting-point {
+            border-color: #3498db;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .technical-specialist {
+            border-color: #e74c3c;
+        }
+        
+        .management-track {
+            border-color: #f39c12;
+        }
+        
+        .business-track {
+            border-color: #27ae60;
+        }
+        
+        .independent-track {
+            border-color: #9b59b6;
+        }
+        
+        .node-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .node-salary {
+            background: rgba(0,0,0,0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        .starting-point .node-salary {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .node-description {
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: #555;
+        }
+        
+        .starting-point .node-description {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .connection-line {
+            position: absolute;
+            background: #bdc3c7;
+            z-index: -1;
+        }
+        
+        .vertical-line {
+            width: 3px;
+            height: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -30px;
+        }
+        
+        .horizontal-line {
+            height: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .experience-timeline {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .timeline-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #e74c3c, #f39c12, #27ae60);
+            border-radius: 2px;
+        }
+        
+        .timeline-point {
+            background: white;
+            border: 4px solid;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-point.junior {
+            border-color: #3498db;
+            color: #3498db;
+        }
+        
+        .timeline-point.mid {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .timeline-point.senior {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+        
+        .timeline-point.expert {
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+        
+        .timeline-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .timeline-years {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .key-points {
+            background: #e8f5e8;
+            border-left: 5px solid #27ae60;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .key-points h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .point-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #27ae60;
+        }
+        
+        .point-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .point-description {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 1200px) {
+            .career-level {
+                flex-wrap: wrap;
+            }
+            
+            .career-node {
+                margin: 10px;
+                min-width: 180px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .career-level {
+                flex-direction: column;
+            }
+            
+            .career-node {
+                margin: 10px 0;
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .timeline {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .timeline::before {
+                width: 4px;
+                height: 100%;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(to bottom, #3498db, #e74c3c, #f39c12, #27ae60);
+            }
+            
+            .timeline-label {
+                position: static;
+                margin-top: 10px;
+                transform: none;
+            }
+            
+            .timeline-years {
+                position: static;
+                margin-top: 5px;
+                transform: none;
+            }
+            
+            .points-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 SEキャリアパス完全ガイド</h1>
+            <p>システムエンジニアから広がる多様なキャリアの可能性を探そう</p>
+        </div>
+        
+        <div class="experience-timeline">
+            <div class="timeline-title">📈 経験年数によるキャリア進化</div>
+            <div class="timeline">
+                <div class="timeline-point junior">
+                    <div class="timeline-label">ジュニア</div>
+                    <div class="timeline-years">0-2年</div>
+                    Jr.
+                </div>
+                <div class="timeline-point mid">
+                    <div class="timeline-label">ミドル</div>
+                    <div class="timeline-years">3-5年</div>
+                    Mid
+                </div>
+                <div class="timeline-point senior">
+                    <div class="timeline-label">シニア</div>
+                    <div class="timeline-years">6-10年</div>
+                    Sr.
+                </div>
+                <div class="timeline-point expert">
+                    <div class="timeline-label">エキスパート</div>
+                    <div class="timeline-years">10年+</div>
+                    Ex.
+                </div>
+            </div>
+        </div>
+        
+        <div class="career-tree">
+            <!-- スタート地点 -->
+            <div class="career-level">
+                <div class="career-node starting-point">
+                    <div class="connection-line vertical-line"></div>
+                    <div class="node-title">🎯 システムエンジニア</div>
+                    <div class="node-salary">年収: 400万〜800万円</div>
+                    <div class="node-description">
+                        システム設計・開発の基礎を学び<br>
+                        IT業界でのキャリアをスタート
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 分岐点 -->
+            <div class="career-level">
+                <!-- 技術スペシャリスト -->
+                <div class="career-node technical-specialist">
+                    <div class="node-title">🔧 システムアーキテクト</div>
+                    <div class="node-salary">年収: 700万〜1200万円</div>
+                    <div class="node-description">
+                        システム全体の設計を担う<br>
+                        技術的なリーダーシップを発揮
+                    </div>
+                </div>
+                
+                <!-- マネジメント -->
+                <div class="career-node management-track">
+                    <div class="node-title">👥 プロジェクトマネージャー</div>
+                    <div class="node-salary">年収: 600万〜1000万円</div>
+                    <div class="node-description">
+                        チーム全体を統括し<br>
+                        プロジェクト成功に導く
+                    </div>
+                </div>
+                
+                <!-- ビジネス -->
+                <div class="career-node business-track">
+                    <div class="node-title">💼 ITコンサルタント</div>
+                    <div class="node-salary">年収: 800万〜1500万円</div>
+                    <div class="node-description">
+                        経営視点でIT戦略を提案<br>
+                        ビジネス課題を技術で解決
+                    </div>
+                </div>
+                
+                <!-- 独立 -->
+                <div class="career-node independent-track">
+                    <div class="node-title">🚀 フリーランス・起業</div>
+                    <div class="node-salary">年収: 720万〜2000万円+</div>
+                    <div class="node-description">
+                        自分のペースで高収入を目指す<br>
+                        独自のサービスを世に送り出す
+                    </div>
+                </div>
+            </div>
+            
+            <!-- さらなる発展 -->
+            <div class="career-level">
+                <div class="career-node technical-specialist">
+                    <div class="node-title">⚡ AIエンジニア</div>
+                    <div class="node-salary">年収: 800万〜1500万円</div>
+                    <div class="node-description">
+                        機械学習・深層学習の専門家<br>
+                        最先端技術の最前線で活躍
+                    </div>
+                </div>
+                
+                <div class="career-node technical-specialist">
+                    <div class="node-title">🔒 セキュリティエンジニア</div>
+                    <div class="node-salary">年収: 700万〜1300万円</div>
+                    <div class="node-description">
+                        サイバーセキュリティの専門家<br>
+                        企業の情報資産を守る
+                    </div>
+                </div>
+                
+                <div class="career-node management-track">
+                    <div class="node-title">🏢 IT部門長・CTO</div>
+                    <div class="node-salary">年収: 1000万〜3000万円</div>
+                    <div class="node-description">
+                        企業のIT戦略を統括<br>
+                        技術組織の最高責任者
+                    </div>
+                </div>
+                
+                <div class="career-node independent-track">
+                    <div class="node-title">🌟 テックアントレプレナー</div>
+                    <div class="node-salary">年収: 青天井</div>
+                    <div class="node-description">
+                        技術系スタートアップを創業<br>
+                        イノベーションを生み出す
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="key-points">
+            <h3>💡 キャリアアップの成功ポイント</h3>
+            <div class="points-grid">
+                <div class="point-item">
+                    <div class="point-title">🎯 専門性の確立</div>
+                    <div class="point-description">特定の技術領域で深い知識を身につけ、その分野のエキスパートになる</div>
+                </div>
+                
+                <div class="point-item">
+                    <div class="point-title">🤝 ビジネス理解</div>
+                    <div class="point-description">技術だけでなく、ビジネス課題を理解し解決できる能力を磨く</div>
+                </div>
+                
+                <div class="point-item">
+                    <div class="point-title">📚 継続学習</div>
+                    <div class="point-description">技術トレンドをキャッチアップし、常に最新のスキルを習得し続ける</div>
+                </div>
+                
+                <div class="point-item">
+                    <div class="point-title">🌐 ネットワーキング</div>
+                    <div class="point-description">業界内での人脈を築き、キャリア機会を広げる</div>
+                </div>
+                
+                <div class="point-item">
+                    <div class="point-title">🎤 発信力</div>
+                    <div class="point-description">ブログ、SNS、勉強会などで知見を発信し、個人ブランドを構築</div>
+                </div>
+                
+                <div class="point-item">
+                    <div class="point-title">💪 チャレンジ精神</div>
+                    <div class="point-description">新しい技術や役割に積極的に挑戦し、経験の幅を広げる</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
