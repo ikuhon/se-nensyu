@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEの年収データ可視化</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .chart-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        .full-width-chart {
+            grid-column: 1 / -1;
+        }
+        
+        .comparison-section {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-section h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .key-points {
+            background: #e8f5e8;
+            border-left: 5px solid #27ae60;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .key-points h4 {
+            color: #27ae60;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .key-points ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .key-points li {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .comparison-stats {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>システムエンジニア（SE）年収データ【2025年版】</h1>
+            <p>現役SEが解説する、リアルな年収事情</p>
+        </div>
+        
+        <div class="comparison-section">
+            <h3>SEの年収は他職種より高水準！</h3>
+            <div class="comparison-stats">
+                <div class="stat-item">
+                    <div class="stat-number">569万円</div>
+                    <div class="stat-label">SE平均年収</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">426万円</div>
+                    <div class="stat-label">全職種平均年収</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+143万円</div>
+                    <div class="stat-label">SE有利額</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">📈 経験年数別平均年収</div>
+                <div class="chart-wrapper">
+                    <canvas id="experienceChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">🏢 企業規模別年収比較</div>
+                <div class="chart-wrapper">
+                    <canvas id="companyChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container full-width-chart">
+                <div class="chart-title">💰 年収レンジ比較（経験年数別）</div>
+                <div class="chart-wrapper">
+                    <canvas id="rangeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="key-points">
+            <h4>💡 年収アップのポイント</h4>
+            <ul>
+                <li><strong>経験3-5年</strong>：大幅な年収アップが期待できる黄金期</li>
+                <li><strong>スキル特化</strong>：AI、クラウド、セキュリティなど需要の高い分野</li>
+                <li><strong>上流工程</strong>：要件定義、設計ができると市場価値UP</li>
+                <li><strong>マネジメント</strong>：チームリーダー経験で年収700万円以上も可能</li>
+                <li><strong>フリーランス</strong>：スキル次第で年収1000万円以上も狙える</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // グラフの共通設定
+        Chart.defaults.font.family = "'Helvetica Neue', Arial, sans-serif";
+        Chart.defaults.font.size = 12;
+        
+        // 経験年数別年収グラフ
+        const experienceCtx = document.getElementById('experienceChart').getContext('2d');
+        new Chart(experienceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['未経験〜2年', '3〜5年', '6〜10年', '10年以上'],
+                datasets: [{
+                    label: '平均年収（万円）',
+                    data: [400, 525, 700, 875],
+                    backgroundColor: [
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(46, 204, 113, 0.8)',
+                        'rgba(241, 196, 15, 0.8)',
+                        'rgba(231, 76, 60, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(46, 204, 113, 1)',
+                        'rgba(241, 196, 15, 1)',
+                        'rgba(231, 76, 60, 1)'
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1000,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '万円';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 企業規模別年収グラフ
+        const companyCtx = document.getElementById('companyChart').getContext('2d');
+        new Chart(companyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['大手IT企業', '中小IT企業', 'フリーランス'],
+                datasets: [{
+                    data: [750, 600, 960],
+                    backgroundColor: [
+                        'rgba(155, 89, 182, 0.8)',
+                        'rgba(52, 152, 219, 0.8)',
+                        'rgba(46, 204, 113, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(155, 89, 182, 1)',
+                        'rgba(52, 152, 219, 1)',
+                        'rgba(46, 204, 113, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '万円';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 年収レンジ比較グラフ
+        const rangeCtx = document.getElementById('rangeChart').getContext('2d');
+        new Chart(rangeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['未経験〜2年', '3〜5年', '6〜10年', '10年以上'],
+                datasets: [
+                    {
+                        label: '最低年収',
+                        data: [325, 400, 550, 700],
+                        backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '平均年収',
+                        data: [400, 525, 700, 875],
+                        backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                        borderColor: 'rgba(46, 204, 113, 1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: '最高年収',
+                        data: [500, 700, 900, 1200],
+                        backgroundColor: 'rgba(241, 196, 15, 0.6)',
+                        borderColor: 'rgba(241, 196, 15, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1300,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '万円';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
