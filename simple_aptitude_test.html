@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SE適性診断 - 簡易版</title>
+    <style>
+        .aptitude-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 25px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            border-radius: 15px;
+            color: white;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .header h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1em;
+        }
+        
+        .questions-preview {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .question-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .question-item:last-child {
+            border-bottom: none;
+        }
+        
+        .question-number {
+            width: 25px;
+            height: 25px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 0.9em;
+        }
+        
+        .question-text {
+            flex: 1;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .scoring-info {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .score-ranges {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            gap: 10px;
+        }
+        
+        .score-range {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 10px 5px;
+            font-size: 0.8em;
+            text-align: center;
+        }
+        
+        .score-number {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #0984e3;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            color: #0984e3;
+            text-decoration: none;
+        }
+        
+        .hiro-comment {
+            background: rgba(255,228,181,0.2);
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .hiro-comment strong {
+            color: #ffeb3b;
+        }
+        
+        @media (max-width: 768px) {
+            .aptitude-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .header h2 {
+                font-size: 1.5em;
+            }
+            
+            .score-ranges {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .question-text {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="aptitude-container">
+        <div class="header">
+            <h2>🔍 SE適性診断チェック</h2>
+            <p>6つの質問であなたのSE適性を診断！雑談が苦手でも大丈夫です</p>
+        </div>
+        
+        <div class="questions-preview">
+            <div class="question-item">
+                <div class="question-number">1</div>
+                <div class="question-text">パズルやゲームで問題を解くのが好きですか？</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">2</div>
+                <div class="question-text">新しいアプリやツールを試すのが楽しいですか？</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">3</div>
+                <div class="question-text">複雑なことを相手に分かりやすく説明するのが得意ですか？</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">4</div>
+                <div class="question-text">困ったときに素直に相談や報告ができますか？</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">5</div>
+                <div class="question-text">チームで何かを成し遂げるのが好きですか？</div>
+            </div>
+            <div class="question-item">
+                <div class="question-number">6</div>
+                <div class="question-text">継続的に学習することに抵抗はありませんか？</div>
+            </div>
+        </div>
+        
+        <div class="scoring-info">
+            <h4>📊 診断結果の見方</h4>
+            <div class="score-ranges">
+                <div class="score-range">
+                    <div class="score-number">5-6個</div>
+                    <div>非常に向いています！</div>
+                </div>
+                <div class="score-range">
+                    <div class="score-number">3-4個</div>
+                    <div>適性ありそうです</div>
+                </div>
+                <div class="score-range">
+                    <div class="score-number">0-2個</div>
+                    <div>他職種も検討を</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hiro-comment">
+            <strong>ひろのコメント：</strong>
+            ちなみに私は3個でしたが、現在SEとして活躍できています。少ないからといって気にすることはないですよ！
+        </div>
+        
+        <div class="cta-section">
+            <a href="#" class="cta-button" target="_blank">
+                🎯 詳細な診断を受ける
+            </a>
+            <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">
+                インタラクティブな診断ツールで詳しくチェック！
+            </p>
+        </div>
+    </div>
+</body>
+</html>

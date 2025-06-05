@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SE年収データ - はてなブログ対応版</title>
+    <style>
+        .chart-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart-title {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .salary-bars {
+            margin: 20px 0;
+        }
+        
+        .salary-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .salary-label {
+            width: 120px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.9em;
+        }
+        
+        .salary-bar {
+            flex: 1;
+            height: 30px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .salary-fill {
+            height: 100%;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+            transition: width 1s ease;
+        }
+        
+        .bar-1 { background: #3498db; width: 40%; }
+        .bar-2 { background: #27ae60; width: 52%; }
+        .bar-3 { background: #f39c12; width: 70%; }
+        .bar-4 { background: #e74c3c; width: 88%; }
+        
+        .salary-amount {
+            width: 100px;
+            text-align: right;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .comparison-box {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .comparison-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.9;
+        }
+        
+        .key-points {
+            background: #e8f5e8;
+            border-left: 5px solid #27ae60;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .key-points h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .key-points ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .key-points li {
+            margin: 5px 0;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .salary-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .salary-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .salary-bar {
+                margin: 5px 0;
+            }
+            
+            .comparison-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chart-container">
+        <div class="chart-title">💰 SEの年収データ【2025年版】</div>
+        
+        <div class="comparison-box">
+            <h3>SEの年収は他職種より高水準！</h3>
+            <div class="comparison-stats">
+                <div class="stat-item">
+                    <div class="stat-number">569万円</div>
+                    <div class="stat-label">SE平均年収</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">426万円</div>
+                    <div class="stat-label">全職種平均</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">+143万円</div>
+                    <div class="stat-label">SE有利額</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="salary-bars">
+            <div class="salary-item">
+                <div class="salary-label">未経験〜2年</div>
+                <div class="salary-bar">
+                    <div class="salary-fill bar-1">400万円</div>
+                </div>
+                <div class="salary-amount">300-500万円</div>
+            </div>
+            
+            <div class="salary-item">
+                <div class="salary-label">3〜5年</div>
+                <div class="salary-bar">
+                    <div class="salary-fill bar-2">525万円</div>
+                </div>
+                <div class="salary-amount">400-700万円</div>
+            </div>
+            
+            <div class="salary-item">
+                <div class="salary-label">6〜10年</div>
+                <div class="salary-bar">
+                    <div class="salary-fill bar-3">700万円</div>
+                </div>
+                <div class="salary-amount">550-900万円</div>
+            </div>
+            
+            <div class="salary-item">
+                <div class="salary-label">10年以上</div>
+                <div class="salary-bar">
+                    <div class="salary-fill bar-4">875万円</div>
+                </div>
+                <div class="salary-amount">700-1200万円</div>
+            </div>
+        </div>
+        
+        <div class="key-points">
+            <h4>💡 年収アップのポイント</h4>
+            <ul>
+                <li><strong>経験3-5年</strong>：大幅な年収アップが期待できる黄金期</li>
+                <li><strong>スキル特化</strong>：AI、クラウド、セキュリティなど需要の高い分野</li>
+                <li><strong>上流工程</strong>：要件定義、設計ができると市場価値UP</li>
+                <li><strong>マネジメント</strong>：チームリーダー経験で年収700万円以上も可能</li>
+                <li><strong>フリーランス</strong>：スキル次第で年収1000万円以上も狙える</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // シンプルなアニメーション（はてなブログ対応）
+        window.addEventListener('load', function() {
+            const fills = document.querySelectorAll('.salary-fill');
+            fills.forEach((fill, index) => {
+                setTimeout(() => {
+                    fill.style.opacity = '1';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

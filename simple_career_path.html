@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEキャリアパス - 簡易版</title>
+    <style>
+        .career-container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid #f1f2f6;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h2 {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            color: #7f8c8d;
+            font-size: 1em;
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+            padding: 10px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #e74c3c, #f39c12, #27ae60);
+            border-radius: 2px;
+        }
+        
+        .timeline-point {
+            background: white;
+            border: 4px solid;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8em;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-point.junior { border-color: #3498db; color: #3498db; }
+        .timeline-point.mid { border-color: #e74c3c; color: #e74c3c; }
+        .timeline-point.senior { border-color: #f39c12; color: #f39c12; }
+        .timeline-point.expert { border-color: #27ae60; color: #27ae60; }
+        
+        .timeline-label {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .timeline-years {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .career-paths {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .career-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .career-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .career-card.technical { border-color: #e74c3c; }
+        .career-card.management { border-color: #f39c12; }
+        .career-card.business { border-color: #27ae60; }
+        .career-card.independent { border-color: #9b59b6; }
+        
+        .career-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .career-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .career-salary {
+            background: rgba(0,0,0,0.1);
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+        
+        .career-desc {
+            font-size: 0.8em;
+            color: #666;
+            line-height: 1.3;
+        }
+        
+        .starting-point {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .starting-point h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .starting-point .salary {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            background: #e8f4fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+            color: white;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .career-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .timeline {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .timeline::before {
+                width: 4px;
+                height: 80%;
+                top: 10%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(to bottom, #3498db, #e74c3c, #f39c12, #27ae60);
+            }
+            
+            .timeline-label, .timeline-years {
+                position: static;
+                margin: 5px 0;
+                transform: none;
+            }
+            
+            .career-paths {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="career-container">
+        <div class="header">
+            <h2>🚀 SEキャリアパス概要</h2>
+            <p>システムエンジニアから広がる多様なキャリアの可能性</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-point junior">
+                <div class="timeline-label">ジュニア</div>
+                <div class="timeline-years">0-2年</div>
+                Jr.
+            </div>
+            <div class="timeline-point mid">
+                <div class="timeline-label">ミドル</div>
+                <div class="timeline-years">3-5年</div>
+                Mid
+            </div>
+            <div class="timeline-point senior">
+                <div class="timeline-label">シニア</div>
+                <div class="timeline-years">6-10年</div>
+                Sr.
+            </div>
+            <div class="timeline-point expert">
+                <div class="timeline-label">エキスパート</div>
+                <div class="timeline-years">10年+</div>
+                Ex.
+            </div>
+        </div>
+        
+        <div class="starting-point">
+            <h3>🎯 システムエンジニア（SE）</h3>
+            <div class="salary">年収: 400万〜800万円</div>
+            <p style="margin: 0; font-size: 0.9em;">システム設計・開発の基礎を学び、IT業界でのキャリアをスタート</p>
+        </div>
+        
+        <div class="career-paths">
+            <div class="career-card technical">
+                <div class="career-icon">🔧</div>
+                <div class="career-title">システムアーキテクト</div>
+                <div class="career-salary">700万〜1200万円</div>
+                <div class="career-desc">システム全体の設計を担う技術的リーダー</div>
+            </div>
+            
+            <div class="career-card management">
+                <div class="career-icon">👥</div>
+                <div class="career-title">プロジェクトマネージャー</div>
+                <div class="career-salary">600万〜1000万円</div>
+                <div class="career-desc">チーム全体を統括しプロジェクト成功に導く</div>
+            </div>
+            
+            <div class="career-card business">
+                <div class="career-icon">💼</div>
+                <div class="career-title">ITコンサルタント</div>
+                <div class="career-salary">800万〜1500万円</div>
+                <div class="career-desc">経営視点でIT戦略を提案</div>
+            </div>
+            
+            <div class="career-card independent">
+                <div class="career-icon">🚀</div>
+                <div class="career-title">フリーランス・起業</div>
+                <div class="career-salary">720万〜2000万円+</div>
+                <div class="career-desc">自分のペースで高収入を目指す</div>
+            </div>
+            
+            <div class="career-card technical">
+                <div class="career-icon">⚡</div>
+                <div class="career-title">AIエンジニア</div>
+                <div class="career-salary">800万〜1500万円</div>
+                <div class="career-desc">機械学習・AI技術の専門家</div>
+            </div>
+            
+            <div class="career-card technical">
+                <div class="career-icon">🔒</div>
+                <div class="career-title">セキュリティエンジニア</div>
+                <div class="career-salary">700万〜1300万円</div>
+                <div class="career-desc">サイバーセキュリティの専門家</div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <p style="margin-bottom: 15px; color: #2c3e50; font-weight: bold;">もっと詳しいキャリアパスを見る</p>
+            <a href="#" class="cta-button" target="_blank">
+                📊 詳細なキャリアマップを見る
+            </a>
+            <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                年収目安・成功ポイント・具体的なステップを詳しく解説
+            </p>
+        </div>
+    </div>
+</body>
+</html>
