@@ -454,7 +454,7 @@
             const ctx = document.getElementById('resultChart').getContext('2d');
             
             // 既存のチャートがあれば破棄
-            if (window.resultChart) {
+            if (window.resultChart && typeof window.resultChart.destroy === 'function') {
                 window.resultChart.destroy();
             }
             
